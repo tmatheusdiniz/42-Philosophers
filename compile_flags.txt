@@ -1,0 +1,7 @@
+-Wall
+-Wextra
+-Werror
+-g
+-Iincludes
+-I./42-Libft
+-I./42-Libft/include
