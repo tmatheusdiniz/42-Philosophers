@@ -22,29 +22,18 @@ CYAN	= \033[3;36m
 RESET	= \033[0m
 
 # Program's name
-NAME		= bin/philo
-
-# Directories
-SRC_DIR		= ./srcs
-OBJ_DIR		= objs
-BIN_DIR		= bin
-LIBFT_DIR	=./42-Libft
+NAME		= philo
 
 # Compiler and Flags
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g
-INCLUDES	= -Iincludes -I$(LIBFT_DIR)
-
-# Libft
-LIBFT		= $(LIBFT_DIR)/libft.a
-LIBFT_FLAGS	= -L$(LIBFT_DIR) -lft
+CFLAGS		= -Wall -Wextra -Werror -g -I.
 
 # Threading flags
 THREAD_FLAGS = -pthread
 
 # Sources and Objects
-SRCS		= $(wildcard $(SRC_DIR)/*.c)
-OBJS		= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+SRCS		= $(wildcard *.c)
+OBJS		= $(SRCS:.c=.o)
 
 # ASCII Art
 define ART
@@ -59,39 +48,27 @@ $(MAGENTA) ${D_BLUE}
 endef
 export ART
 
-# Rules
-all: submodule $(NAME)
-
-submodule:
-	@git submodule update --init --recursive
-
-$(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDES) $(LIBFT_FLAGS) $(THREAD_FLAGS) -o $(NAME)
+$(NAME): $(OBJS) $(HEADER)
+	@$(CC) $(CFLAGS) $(OBJS) $(THREAD_FLAGS) -o $(NAME)
 	@clear
 	@echo "$$ART"
 	@echo "$(CYAN)Philosophers compiled successfully!$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 	@sleep 0.02
 	@clear
 	@echo "$(RED)Compiling philosophers sources $<$(RESET)"
 
-$(LIBFT):
-	@make bonus --silent -C $(LIBFT_DIR)
-
 clean:
 	@clear
-	@make --silent -C $(LIBFT_DIR) clean
-	@rm -rf $(OBJ_DIR)
+	@rm -rf ./*.o
 	@echo "$(YELLOW)Object files cleaned!$(RESET)"
 
 fclean: clean
-	@make --silent -C $(LIBFT_DIR) clean
-	@rm -f $(BIN_DIR)
+	@rm -rf $(NAME)
 	@echo "$(YELLOW)Executable removed!$(RESET)"
 
-re: fclean all
+re: fclean $(NAME)
 
 .PHONY: all clean fclean re
