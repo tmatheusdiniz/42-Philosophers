@@ -42,8 +42,9 @@ typedef struct s_table
 	int				simulation_stop;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
-	pthread_mutex_t	meal_check_mutex;
-	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	check_last_meal;
+	pthread_mutex_t	check_stop_s;
+	pthread_mutex_t	check_all_eaten;
 	struct s_philo	*philos;
 }				t_table;
 
@@ -64,6 +65,7 @@ int			main(int v, char **str);
 // Thread
 int			init_threads(t_table *table);
 int			start_structs(t_table *table, char **str);
+void		handle_one_thread(t_table *table);
 
 // Tasks
 int			eating(t_philo *philo);
@@ -87,6 +89,7 @@ void		destroy_forks(t_table *table, int count);
 int			ft_atoi(const char *nptr);
 int			ft_isnum(char *str);
 size_t		ft_strlen(const char *s);
+int			check_should_finish(t_table *table);
 void		check_if_all_have_eaten(t_table *table, t_philo *philo);
 
 #endif

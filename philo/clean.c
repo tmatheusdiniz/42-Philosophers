@@ -36,6 +36,6 @@ void	clean_all(t_table *table)
 		table->forks = NULL;
 	}
 	pthread_mutex_destroy(&table->print_mutex);
-	pthread_mutex_destroy(&table->meal_check_mutex);
-	pthread_mutex_destroy(&table->stop_mutex);
+	pthread_mutex_destroy(&table->check_last_meal);
+	pthread_mutex_destroy(&table->check_stop_s);
 }

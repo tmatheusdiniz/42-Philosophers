@@ -26,7 +26,7 @@ NAME		= philo
 
 # Compiler and Flags
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g -I.
+CFLAGS		= -Wall -Wextra -Werror -g -I. #-fsanitize=thread
 
 # Threading flags
 THREAD_FLAGS = -pthread

@@ -61,6 +61,16 @@ size_t	ft_strlen(const char *s)
 	return (count);
 }
 
+int	check_should_finish(t_table *table)
+{
+	int	should_stop;
+
+	pthread_mutex_lock(&table->check_stop_s);
+	should_stop = table->simulation_stop;
+	pthread_mutex_unlock(&table->check_stop_s);
+	return (should_stop);
+}
+
 void	check_if_all_have_eaten(t_table *table, t_philo *philo)
 {
 	int	i;
@@ -70,7 +80,7 @@ void	check_if_all_have_eaten(t_table *table, t_philo *philo)
 	flag = 1;
 	if (table->must_eat_count == -1)
 		return ;
-	pthread_mutex_lock(&table->meal_check_mutex);
+	pthread_mutex_lock(&table->check_all_eaten);
 	while ((size_t)i < philo->table->philos_num)
 	{
 		if (table->philos[i].meals_eaten < philo->table->must_eat_count)
@@ -80,11 +90,11 @@ void	check_if_all_have_eaten(t_table *table, t_philo *philo)
 		}
 		i ++;
 	}
-	pthread_mutex_unlock(&table->meal_check_mutex);
+	pthread_mutex_unlock(&table->check_all_eaten);
 	if (flag)
 	{
-		pthread_mutex_lock(&table->stop_mutex);
+		pthread_mutex_lock(&table->check_stop_s);
 		table->simulation_stop = 1;
-		pthread_mutex_unlock(&table->stop_mutex);
+		pthread_mutex_unlock(&table->check_stop_s);
 	}
 }

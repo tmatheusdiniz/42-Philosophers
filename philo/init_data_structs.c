@@ -38,9 +38,11 @@ static int	init_mutexes(t_table *table)
 
 	if (pthread_mutex_init(&table->print_mutex, NULL))
 		return (1);
-	if (pthread_mutex_init(&table->meal_check_mutex, NULL))
+	if (pthread_mutex_init(&table->check_last_meal, NULL))
 		return (1);
-	if (pthread_mutex_init(&table->stop_mutex, NULL))
+	if (pthread_mutex_init(&table->check_stop_s, NULL))
+		return (1);
+	if (pthread_mutex_init(&table->check_all_eaten, NULL))
 		return (1);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->philos_num);
 	if (!table->forks)
@@ -80,4 +82,17 @@ int	start_structs(t_table *table, char **str)
 	}
 	init_philosophers(table->philos, table);
 	return (0);
+}
+
+void	handle_one_thread(t_table *table)
+{
+	long long	death_time;
+
+	table->start_time = get_current_time();
+	table->philos[0].last_meal_time = table->start_time;
+	print_state(&table->philos[0], FORK_TAKEN);
+	precise_sleep(table->time_die);
+	death_time = get_current_time() - table->start_time;
+	printf(WHITE "%4lld " RESET BOLD "%2i " RED "%16s %s\n" RESET,
+		death_time, table->philos[0].id, "died", "💀");
 }
